@@ -2,26 +2,26 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'nodejs-18.17.0' // Updated Node.js tool version name
+        nodejs 'nodejs-18.17.0' // Ensure this matches the configured Node.js tool in Jenkins
     }
 
     environment {
-        NODEJS_HOME = '/Users/ariv/.nvm/versions/node/v18.17.0/bin/node' // Path to Node.js
+        NODEJS_HOME = '/Users/ariv/.nvm/versions/node/v18.17.0' // Correct Node.js path
         SONAR_SCANNER_PATH = '/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin' // Path to SonarQube scanner
-        PATH = "${NODEJS_HOME}:${SONAR_SCANNER_PATH}:${PATH}" // Update the PATH
+        PATH = "${NODEJS_HOME}/bin:${SONAR_SCANNER_PATH}:${PATH}" // Update PATH to include Node.js and SonarQube paths
     }
 
     stages {
         stage('Checkout') {
             steps {
-                checkout scm // Check out the code from the source control
+                checkout scm // Check out the code from source control
             }
         }
 
         stage('Install Dependencies') {
             steps {
                 sh '''
-                export PATH=$NODEJS_HOME:$PATH
+                export PATH=$NODEJS_HOME/bin:$PATH
                 npm install
                 '''
             }
@@ -30,7 +30,7 @@ pipeline {
         stage('Lint') {
             steps {
                 sh '''
-                export PATH=$NODEJS_HOME:$PATH
+                export PATH=$NODEJS_HOME/bin:$PATH
                 npm run lint
                 '''
             }
@@ -39,7 +39,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh '''
-                export PATH=$NODEJS_HOME:$PATH
+                export PATH=$NODEJS_HOME/bin:$PATH
                 npm run build
                 '''
             }
@@ -47,7 +47,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             environment {
-                SONAR_TOKEN = credentials('sonar-token') // Accessing the SonarQube token stored in Jenkins credentials
+                SONAR_TOKEN = credentials('sonar-token') // Access SonarQube token from Jenkins credentials
             }
             steps {
                 sh '''
@@ -56,10 +56,10 @@ pipeline {
                     echo "SonarQube scanner not found. Please install it."
                     exit 1
                 fi
-               sonar-scanner -Dsonar.projectKey=pythonproject \
+                sonar-scanner -Dsonar.projectKey=pythonproject \
                               -Dsonar.sources=. \
                               -Dsonar.host.url=http://localhost:9000 \
-                              -Dsonar.token=sqp_ea47ab56f8ced55a1ec3d3a7fee1f2a9a538c3e4
+                              -Dsonar.token=$SONAR_TOKEN
                 '''
             }
         }
