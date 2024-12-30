@@ -2,13 +2,12 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'nodejs-22.12.0'  // Ensure the NodeJS tool ID matches the one configured in Jenkins
+        nodejs 'nodejs-22.12.0'  // Ensure this matches the NodeJS tool ID configured in Jenkins
     }
 
     environment {
-        NODE_PATH = '/Users/ariv/.nvm/versions/node/v22.12.0/bin/node'  // Specify Node.js path explicitly
         SONAR_SCANNER_PATH = '/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin'  // Set the path for SonarQube scanner
-        PATH = "${SONAR_SCANNER_PATH}:${PATH}:${NODE_PATH}"  // Add Node and Sonar scanner to PATH
+        PATH = "${SONAR_SCANNER_PATH}:${PATH}"  // Add Sonar scanner to PATH
     }
 
     stages {
