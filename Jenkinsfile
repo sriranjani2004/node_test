@@ -7,6 +7,7 @@ pipeline {
     environment {
         NODEJS_HOME = '/usr/local/bin/node'
         SONAR_SCANNER_PATH = '/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin'
+        PATH = "${SONAR_SCANNER_PATH}:${NODEJS_HOME}:${env.PATH}" // Prepend both paths
     }
 
     stages {
@@ -18,9 +19,8 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                // Set the PATH and install dependencies using npm
+                // Install dependencies using npm
                 sh '''
-                export PATH=$NODEJS_HOME:$PATH
                 npm install
                 '''
             }
@@ -30,7 +30,6 @@ pipeline {
             steps {
                 // Run linting to ensure code quality
                 sh '''
-                export PATH=$NODEJS_HOME:$PATH
                 npm run lint
                 '''
             }
@@ -40,7 +39,6 @@ pipeline {
             steps {
                 // Build the React app
                 sh '''
-                export PATH=$NODEJS_HOME:$PATH
                 npm run build
                 '''
             }
@@ -48,13 +46,8 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                // Ensure that sonar-scanner is in the PATH
+                // Execute SonarQube analysis
                 sh '''
-                export PATH=$SONAR_SCANNER_PATH:$PATH
-                if ! [ -x "$(command -v sonar-scanner)" ]; then
-                  echo "SonarQube scanner not found. Please install it."
-                  exit 1
-                fi
                 sonar-scanner -Dsonar.projectKey=projectnode \
                     -Dsonar.sources=. \
                     -Dsonar.host.url=http://localhost:9000 \
