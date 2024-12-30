@@ -2,27 +2,26 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'nodejs-18.17.0' // Specify the tool version of Node.js
+        nodejs 'nodejs-18.17.0'  // Ensure the NodeJS tool ID matches the one configured in Jenkins
     }
 
     environment {
-        NODEJS_HOME = '/usr/local/bin/node' // Set the path for Node.js
-        SONAR_SCANNER_PATH = '/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin' // Set the path for SonarQube scanner
-        PATH = "${NODEJS_HOME}:${SONAR_SCANNER_PATH}:${PATH}" // Add both Node.js and Sonar scanner paths to the system PATH
+        SONAR_SCANNER_PATH = '/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin'  // Set the path for SonarQube scanner
+        PATH = "${SONAR_SCANNER_PATH}:${PATH}"  // Add Sonar scanner to PATH
     }
 
     stages {
         stage('Checkout') {
             steps {
-                checkout scm // Check out the source code from the Git repository
+                checkout scm  // Checkout the source code from Git
             }
         }
 
         stage('Install Dependencies') {
             steps {
                 script {
-                    // Ensure npm is installed and available
-                    sh 'npm install' // Install dependencies using npm
+                    // Ensure npm is available through the NodeJS tool
+                    sh 'npm install'  // Install dependencies
                 }
             }
         }
@@ -30,7 +29,7 @@ pipeline {
         stage('Lint') {
             steps {
                 script {
-                    // Run linting (ensure eslint is set up in your project)
+                    // Run linting
                     sh 'npm run lint'
                 }
             }
@@ -39,7 +38,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    // Run build script (ensure "build" is defined in your package.json)
+                    // Run build script
                     sh 'npm run build'
                 }
             }
@@ -47,7 +46,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             environment {
-                SONAR_TOKEN = credentials('sonar-token') // Access SonarQube token from Jenkins credentials
+                SONAR_TOKEN = credentials('sonar-token')  // SonarQube token from Jenkins credentials
             }
             steps {
                 script {
