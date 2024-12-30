@@ -1,6 +1,15 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'nodejs-22.12.0'  // Ensure this matches the NodeJS tool ID configured in Jenkins
+    }
+
+    environment {
+        SONAR_SCANNER_PATH = '/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin'
+        PATH = "${SONAR_SCANNER_PATH}:${PATH}"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -11,8 +20,14 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    sh 'nvm use 22.12.0' 
-                    sh 'npm install' 
+                    // Make nvm available and use Node 22
+                    sh '''
+                    export NVM_DIR="$HOME/.nvm"
+                    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+                    nvm install 22.12.0
+                    nvm use 22.12.0
+                    npm install
+                    '''
                 }
             }
         }
@@ -45,9 +60,9 @@ pipeline {
                         exit 1
                     fi
                     sonar-scanner -Dsonar.projectKey=pythonproject \
-                                 -Dsonar.sources=. \
-                                 -Dsonar.host.url=http://localhost:9000 \
-                                 -Dsonar.token=${SONAR_TOKEN}
+                                   -Dsonar.sources=. \
+                                   -Dsonar.host.url=http://localhost:9000 \
+                                   -Dsonar.token=${SONAR_TOKEN}
                     '''
                 }
             }
