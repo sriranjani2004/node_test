@@ -47,6 +47,9 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
+            environment {
+                SONAR_TOKEN = credentials('sonar-token') // Accessing the SonarQube token stored in Jenkins credentials
+            }
             steps {
                 // Ensure that sonar-scanner is in the PATH
                 sh '''
@@ -58,7 +61,7 @@ pipeline {
                 sonar-scanner -Dsonar.projectKey=projectnode \
                     -Dsonar.sources=. \
                     -Dsonar.host.url=http://localhost:9000 \
-                    -Dsonar.token=sqp_17a33195d4c4d7f3e183f4930f05536b4dbda549
+                    -Dsonar.token=$SONAR_TOKEN
                 '''
             }
         }
