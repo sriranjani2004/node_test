@@ -3,18 +3,15 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "react": "18.17.0",  // Updated React version
-    "react-dom": "18.17.0",  // Updated React DOM version
-    "react-scripts": "5.0.1"  // Ensure compatibility with React scripts
-  },
-  "engines": {
-    "node": ">=22.0.0",  // Specifies Node.js version compatibility (Node 22)
-    "npm": ">=10.0.0"    // Ensure npm version is compatible (Node 22 uses npm 10+)
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-scripts": "5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test"
+    "test": "react-scripts test",
+    "lint": "eslint ."
   },
   "eslintConfig": {
     "extends": [
