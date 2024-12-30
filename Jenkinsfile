@@ -6,8 +6,9 @@ pipeline {
     }
 
     environment {
+        NODE_PATH = '/usr/local/bin/node'  // Specify Node.js path explicitly
         SONAR_SCANNER_PATH = '/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin'  // Set the path for SonarQube scanner
-        PATH = "${SONAR_SCANNER_PATH}:${PATH}"  // Add Sonar scanner to PATH
+        PATH = "${SONAR_SCANNER_PATH}:${PATH}:${NODE_PATH}"  // Add Node and Sonar scanner to PATH
     }
 
     stages {
@@ -46,17 +47,17 @@ pipeline {
 
         stage('SonarQube Analysis') {
             environment {
-                SONAR_TOKEN = credentials('sonar-token')  // SonarQube token from Jenkins credentials
+                SONAR_TOKEN = credentials('sonar-token')  // Fetch SonarQube token from Jenkins credentials
             }
             steps {
                 script {
-                    // Run SonarQube analysis
+                    // Run SonarQube analysis using the token from credentials
                     sh '''
                     if ! command -v sonar-scanner &> /dev/null; then
                         echo "SonarQube scanner not found. Please install it."
                         exit 1
                     fi
-                    sonar-scanner -Dsonar.projectKey=react-register-form \
+                    sonar-scanner -Dsonar.projectKey=pythonproject \
                                    -Dsonar.sources=. \
                                    -Dsonar.host.url=http://localhost:9000 \
                                    -Dsonar.token=${SONAR_TOKEN}
