@@ -1,27 +1,18 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs 'nodejs-22.12.0'  // Ensure this matches the NodeJS tool ID configured in Jenkins
-    }
-
-    environment {
-        SONAR_SCANNER_PATH = '/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin'  // Set the path for SonarQube scanner
-        PATH = "${SONAR_SCANNER_PATH}:${PATH}"  // Add Sonar scanner to PATH
-    }
-
     stages {
         stage('Checkout') {
             steps {
-                checkout scm  // Checkout the source code from Git
+                checkout scm
             }
         }
 
         stage('Install Dependencies') {
             steps {
                 script {
-                    // Ensure npm is available through the NodeJS tool
-                    sh 'npm install'  // Install dependencies
+                    sh 'nvm use 22.12.0' 
+                    sh 'npm install' 
                 }
             }
         }
@@ -29,7 +20,6 @@ pipeline {
         stage('Lint') {
             steps {
                 script {
-                    // Run linting
                     sh 'npm run lint'
                 }
             }
@@ -38,7 +28,6 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    // Run build script
                     sh 'npm run build'
                 }
             }
@@ -46,20 +35,19 @@ pipeline {
 
         stage('SonarQube Analysis') {
             environment {
-                SONAR_TOKEN = credentials('sonar-token')  // Fetch SonarQube token from Jenkins credentials
+                SONAR_TOKEN = credentials('sonar-token')
             }
             steps {
                 script {
-                    // Run SonarQube analysis using the token from credentials
                     sh '''
                     if ! command -v sonar-scanner &> /dev/null; then
                         echo "SonarQube scanner not found. Please install it."
                         exit 1
                     fi
                     sonar-scanner -Dsonar.projectKey=pythonproject \
-                                   -Dsonar.sources=. \
-                                   -Dsonar.host.url=http://localhost:9000 \
-                                   -Dsonar.token=${SONAR_TOKEN}
+                                 -Dsonar.sources=. \
+                                 -Dsonar.host.url=http://localhost:9000 \
+                                 -Dsonar.token=${SONAR_TOKEN}
                     '''
                 }
             }
