@@ -24,8 +24,8 @@ pipeline {
                     sh '''
                     export NVM_DIR="$HOME/.nvm"
                     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-                    nvm install 22.12.0
-                    nvm use 22.12.0
+                    nvm install 22.12.0  // Install Node.js 22.12.0
+                    nvm use 22.12.0  // Use Node.js 22.12.0
                     npm install  // Install dependencies
                     '''
                 }
