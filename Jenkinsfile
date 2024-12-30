@@ -1,73 +1,65 @@
 pipeline {
     agent any
-
     tools {
-        nodejs 'nodejs-22.12.0'  // Ensure this matches the NodeJS tool ID configured in Jenkins
+        nodejs 'nodejs-20' 
     }
 
     environment {
-        SONAR_SCANNER_PATH = '/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin'  // Set the path for SonarQube scanner
-        PATH = "${SONAR_SCANNER_PATH}:${PATH}"  // Add Sonar scanner to PATH
+        NODEJS_HOME = '/usr/local/bin/node'
+        SONAR_SCANNER_PATH = '/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                checkout scm  // Checkout the source code from Git
+                checkout scm
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                script {
-                    // Ensure npm is available through the NodeJS tool
-                    sh '''
-                    export NVM_DIR="$HOME/.nvm"
-                    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-                    nvm install 22.12.0  // Install Node.js 22.12.0
-                    nvm use 22.12.0  // Use Node.js 22.12.0
-                    npm install  // Install dependencies
-                    '''
-                }
+                // Set the PATH and install dependencies using npm
+                sh '''
+                export PATH=$NODEJS_HOME:$PATH
+                npm install
+                '''
             }
         }
 
         stage('Lint') {
             steps {
-                script {
-                    // Run linting
-                    sh 'npm run lint'
-                }
+                // Run linting to ensure code quality
+                sh '''
+                export PATH=$NODEJS_HOME:$PATH
+                npm run lint
+                '''
             }
         }
 
         stage('Build') {
             steps {
-                script {
-                    // Run build script
-                    sh 'npm run build'
-                }
+                // Build the React app
+                sh '''
+                export PATH=$NODEJS_HOME:$PATH
+                npm run build
+                '''
             }
         }
 
         stage('SonarQube Analysis') {
-            environment {
-                SONAR_TOKEN = credentials('sonar-token')  // Fetch SonarQube token from Jenkins credentials
-            }
             steps {
-                script {
-                    // Run SonarQube analysis using the token from credentials
-                    sh '''
-                    if ! command -v sonar-scanner &> /dev/null; then
-                        echo "SonarQube scanner not found. Please install it."
-                        exit 1
-                    fi
-                    sonar-scanner -Dsonar.projectKey=pythonproject \
-                                   -Dsonar.sources=. \
-                                   -Dsonar.host.url=http://localhost:9000 \
-                                   -Dsonar.token=${SONAR_TOKEN}
-                    '''
-                }
+                // Ensure that sonar-scanner is in the PATH
+                sh '''
+                export PATH=$SONAR_SCANNER_PATH:$PATH
+                if ! [ -x "$(command -v sonar-scanner)" ]; then
+                  echo "SonarQube scanner not found. Please install it."
+                  exit 1
+                fi
+                sonar-scanner -Dsonar.projectKey=projectnode \
+                    -Dsonar.sources=. \
+                    -Dsonar.host.url=http://localhost:9000 \
+                    -Dsonar.token=sqp_17a33195d4c4d7f3e183f4930f05536b4dbda549
+                '''
             }
         }
     }
