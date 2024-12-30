@@ -5,7 +5,11 @@
   "dependencies": {
     "react": "18.17.0",  // Updated React version
     "react-dom": "18.17.0",  // Updated React DOM version
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1"  // Ensure compatibility with React scripts
+  },
+  "engines": {
+    "node": ">=22.0.0",  // Specifies Node.js version compatibility (Node 22)
+    "npm": ">=10.0.0"    // Ensure npm version is compatible (Node 22 uses npm 10+)
   },
   "scripts": {
     "start": "react-scripts start",
