@@ -5,11 +5,11 @@ pipeline {
     }
 
     environment {
-        // Use double quotes for string assignment
-        NODEJS_HOME = "/Users/ariv/.nvm/versions/node/v20.18.1"
-        SONAR_SCANNER_PATH = "/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin"
-        // Store your SonarQube token securely using Jenkins credentials
-        SONAR_TOKEN = credentials('sonar-token')  // Use Jenkins credentials plugin
+        // Use the NodeJS installation defined in Jenkins
+        NODEJS_HOME = tool name: 'nodejs-20', type: 'NodeJS'
+        SONAR_SCANNER_PATH = '/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin'
+        // Use Jenkins credentials for SonarQube token
+        SONAR_TOKEN = credentials('sonar-token')
     }
 
     stages {
@@ -21,10 +21,8 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                // Initialize NVM and set the correct Node.js version
+                // Use the Jenkins-managed NodeJS installation directly
                 sh '''
-                source ~/.nvm/nvm.sh  # Initialize NVM
-                export NODEJS_HOME=/Users/ariv/.nvm/versions/node/v20.18.1
                 export PATH=$NODEJS_HOME/bin:$PATH
                 npm install
                 '''
@@ -35,8 +33,6 @@ pipeline {
             steps {
                 // Run linting to ensure code quality
                 sh '''
-                source ~/.nvm/nvm.sh  # Initialize NVM
-                export NODEJS_HOME=/Users/ariv/.nvm/versions/node/v20.18.1
                 export PATH=$NODEJS_HOME/bin:$PATH
                 npm run lint
                 '''
@@ -47,8 +43,6 @@ pipeline {
             steps {
                 // Build the React app
                 sh '''
-                source ~/.nvm/nvm.sh  # Initialize NVM
-                export NODEJS_HOME=/Users/ariv/.nvm/versions/node/v20.18.1
                 export PATH=$NODEJS_HOME/bin:$PATH
                 npm run build
                 '''
