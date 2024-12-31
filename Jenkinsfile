@@ -3,50 +3,58 @@ pipeline {
     tools {
         nodejs 'nodejs-20' 
     }
- 
+
     environment {
-        NODEJS_HOME = 'NODEJS_HOME = '/Users/ariv/.nvm/versions/node/v20.18.1'  
-        SONAR_SCANNER_PATH = '/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin'
-        SONAR_TOKEN = 'sqp_13bdfcf460d88304c814d35ac1c76a1adc0b3b67' // Replace with your new SonarQube token
+        // Use double quotes for string assignment
+        NODEJS_HOME = "/Users/ariv/.nvm/versions/node/v20.18.1"
+        SONAR_SCANNER_PATH = "/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin"
+        // Store your SonarQube token securely using Jenkins credentials
+        SONAR_TOKEN = credentials('sonar-token')  // Use Jenkins credentials plugin
     }
- 
+
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
- 
+
         stage('Install Dependencies') {
             steps {
-                // Set the PATH and install dependencies using npm
+                // Initialize NVM and set the correct Node.js version
                 sh '''
-                export PATH=$NODEJS_HOME:$PATH
+                source ~/.nvm/nvm.sh  # Initialize NVM
+                export NODEJS_HOME=/Users/ariv/.nvm/versions/node/v20.18.1
+                export PATH=$NODEJS_HOME/bin:$PATH
                 npm install
                 '''
             }
         }
- 
+
         stage('Lint') {
             steps {
                 // Run linting to ensure code quality
                 sh '''
-                export PATH=$NODEJS_HOME:$PATH
+                source ~/.nvm/nvm.sh  # Initialize NVM
+                export NODEJS_HOME=/Users/ariv/.nvm/versions/node/v20.18.1
+                export PATH=$NODEJS_HOME/bin:$PATH
                 npm run lint
                 '''
             }
         }
- 
+
         stage('Build') {
             steps {
                 // Build the React app
                 sh '''
-                export PATH=$NODEJS_HOME:$PATH
+                source ~/.nvm/nvm.sh  # Initialize NVM
+                export NODEJS_HOME=/Users/ariv/.nvm/versions/node/v20.18.1
+                export PATH=$NODEJS_HOME/bin:$PATH
                 npm run build
                 '''
             }
         }
- 
+
         stage('SonarQube Analysis') {
             steps {
                 // Ensure that sonar-scanner is in the PATH
@@ -61,7 +69,7 @@ pipeline {
             }
         }
     }
- 
+
     post {
         success {
             echo 'Pipeline completed successfully'
