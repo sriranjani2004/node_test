@@ -5,7 +5,7 @@ pipeline {
     }
  
     environment {
-        NODEJS_HOME = '/usr/local/bin/node'  
+        NODEJS_HOME = 'NODEJS_HOME = '/Users/ariv/.nvm/versions/node/v20.18.1'  
         SONAR_SCANNER_PATH = '/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin'
         SONAR_TOKEN = 'sqp_13bdfcf460d88304c814d35ac1c76a1adc0b3b67' // Replace with your new SonarQube token
     }
