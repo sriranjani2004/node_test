@@ -48,14 +48,14 @@ pipeline {
  
         stage('SonarQube Analysis') {
             environment {
-                SONAR_TOKEN = 'sqp_dde98195ae7ce6f90f35f81dc69fdff2d148de55' // New SonarQube token
+                SONAR_TOKEN = 'sqp_13bdfcf460d88304c814d35ac1c76a1adc0b3b67' // New SonarQube token
             }
             steps {
                 // Ensure that sonar-scanner is in the PATH
                 sh '''
                 export PATH=$SONAR_SCANNER_PATH:$PATH
                 which sonar-scanner || echo "SonarQube scanner not found. Please install it."
-                sonar-scanner -Dsonar.projectKey=new1 \
+                sonar-scanner -Dsonar.projectKey=reactproject \
                     -Dsonar.sources=. \
                     -Dsonar.host.url=http://localhost:9000 \
                     -Dsonar.token=$SONAR_TOKEN
