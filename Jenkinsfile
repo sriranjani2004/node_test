@@ -8,9 +8,9 @@ pipeline {
         // Ensure Jenkins uses the installed NodeJS version, not the nvm version
         NODEJS_HOME = '/usr/local/bin/node'
         SONAR_SCANNER_PATH = '/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin'
-        SONAR_TOKEN = credentials('sonar-token')
+        // Directly include the Sonar token here (not recommended for security reasons)
+        SONAR_TOKEN = 'sqp_13bdfcf460d88304c814d35ac1c76a1adc0b3b67'  // Your Sonar token
     }
- 
 
     stages {
         stage('Checkout') {
