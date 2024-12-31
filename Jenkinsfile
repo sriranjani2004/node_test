@@ -6,10 +6,11 @@ pipeline {
 
     environment {
         // Ensure Jenkins uses the installed NodeJS version, not the nvm version
-        NODEJS_HOME = tool name: 'nodejs-20', type: 'NodeJS'
+        NODEJS_HOME = '/usr/local/bin/node'
         SONAR_SCANNER_PATH = '/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin'
         SONAR_TOKEN = credentials('sonar-token')
     }
+ 
 
     stages {
         stage('Checkout') {
