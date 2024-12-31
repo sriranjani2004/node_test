@@ -5,10 +5,8 @@ pipeline {
     }
 
     environment {
-        // Use the NodeJS installation defined in Jenkins
-        NODEJS_HOME = tool name: 'nodejs-20', type: 'NodeJS'
-        SONAR_SCANNER_PATH = '/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin'
         // Use Jenkins credentials for SonarQube token
+        SONAR_SCANNER_PATH = '/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin'
         SONAR_TOKEN = credentials('sonar-token')
     }
 
