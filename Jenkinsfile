@@ -1,34 +1,32 @@
 pipeline {
     agent any
     tools {
-        nodejs 'nodejs-20' // Use the NodeJS tool defined in Jenkins Global Tool Configuration
+        nodejs 'nodejs-20' 
     }
-
+ 
     environment {
-        // Ensure Jenkins uses the installed NodeJS version, not the nvm version
-        NODEJS_HOME = '/usr/local/bin/node'
+        NODEJS_HOME = '/Users/ariv/.nvm/versions/node/v20.18.1'  // Updated Node.js path
         SONAR_SCANNER_PATH = '/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin'
-        // Directly include the Sonar token here (not recommended for security reasons)
-        SONAR_TOKEN = 'sqp_13bdfcf460d88304c814d35ac1c76a1adc0b3b67'  // Your Sonar token
+        SONAR_TOKEN = 'new_sonar_token_here' // Replace with your new SonarQube token
     }
-
+ 
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
-
+ 
         stage('Install Dependencies') {
             steps {
-                // Ensure Jenkins uses its configured NodeJS installation
+                // Set the PATH and install dependencies using npm
                 sh '''
                 export PATH=$NODEJS_HOME/bin:$PATH
                 npm install
                 '''
             }
         }
-
+ 
         stage('Lint') {
             steps {
                 // Run linting to ensure code quality
@@ -38,7 +36,7 @@ pipeline {
                 '''
             }
         }
-
+ 
         stage('Build') {
             steps {
                 // Build the React app
@@ -48,7 +46,7 @@ pipeline {
                 '''
             }
         }
-
+ 
         stage('SonarQube Analysis') {
             steps {
                 // Ensure that sonar-scanner is in the PATH
@@ -63,7 +61,7 @@ pipeline {
             }
         }
     }
-
+ 
     post {
         success {
             echo 'Pipeline completed successfully'
