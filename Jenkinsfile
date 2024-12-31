@@ -1,11 +1,12 @@
 pipeline {
     agent any
     tools {
-        nodejs 'nodejs-20' 
+        nodejs 'nodejs-20' // Use the NodeJS tool defined in Jenkins Global Tool Configuration
     }
 
     environment {
-        // Use Jenkins credentials for SonarQube token
+        // Ensure Jenkins uses the installed NodeJS version, not the nvm version
+        NODEJS_HOME = tool name: 'nodejs-20', type: 'NodeJS'
         SONAR_SCANNER_PATH = '/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin'
         SONAR_TOKEN = credentials('sonar-token')
     }
@@ -19,7 +20,7 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                // Use the Jenkins-managed NodeJS installation directly
+                // Ensure Jenkins uses its configured NodeJS installation
                 sh '''
                 export PATH=$NODEJS_HOME/bin:$PATH
                 npm install
