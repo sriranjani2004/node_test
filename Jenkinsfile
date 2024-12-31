@@ -7,6 +7,7 @@ pipeline {
     environment {
         NODEJS_HOME = '/usr/local/bin/node'  
         SONAR_SCANNER_PATH = '/Users/ariv/Downloads/sonar-scanner-6.2.1.4610-macosx-x64/bin'
+        SONAR_TOKEN = 'new_sonar_token_here' // Replace with your new SonarQube token
     }
  
     stages {
@@ -47,9 +48,6 @@ pipeline {
         }
  
         stage('SonarQube Analysis') {
-            environment {
-                SONAR_TOKEN = 'sqp_13bdfcf460d88304c814d35ac1c76a1adc0b3b67' // New SonarQube token
-            }
             steps {
                 // Ensure that sonar-scanner is in the PATH
                 sh '''
